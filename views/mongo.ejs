@@ -1,0 +1,169 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Datatables in action .Server side processing</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">    
+    <link rel="stylesheet" href="css/editor.dataTables.min.css">    
+
+     <style>
+        body {
+            padding-top: 50px;
+        }
+    </style>
+</head>
+
+<body class="bg-info">
+<%- include('parts/navbar') %>
+
+<div class="container">
+    <div class="jumbotron">
+        <h2>MongoDB in action!</h2>
+    </div>
+</div>
+<div class="container">
+    <div class="ZipDatatable">
+        <table id="ZipcodesTable" class="table table-bordered table-sm">
+            <thead>
+                <tr>
+<!--                         <th>ID</th>  -->
+                    <th>郵遞區號</th>
+                    <th>城巿</th>
+                    <th>人口</th>
+                    <th>國家</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+<script src="js/dataTables.editor.min.js"></script>      
+
+<script>
+    var editor;
+    //$.fn.poshytip = { defaults: null };
+    //$.fn.editable.defaults.mode = 'inline';
+    $(document).ready(function () {
+        editor = new $.fn.dataTable.Editor( {    
+            ajax: {
+                create: {
+                    type: 'POST',
+                    url:  '/InsertZipCode'
+                },
+                edit: {
+                    type: 'PUT',
+                    url:  '/UpdateZipCode'
+                },
+                remove: {
+                    type: 'DELETE',
+                    url:  '/DeleteZipCode/id=_id'
+                }, 
+            },  	
+            table: "#ZipcodesTable",
+            idSrc:  '_id',
+            fields: [ 
+            {
+                    label: "ID:",
+                    name: "_id",
+                    type: "readonly"
+            },
+            {
+                    label: "郵遞區號:",
+                    name: "ZipCode",
+                    placeholder: "請輸入郵遞區號"
+                }, 
+            {
+                    label: "城巿:",
+                    name: "City",
+                    placeholder: "請輸入城巿"
+                }, 
+            {
+                    label: "人口:",
+                    name: "Population",
+                    placeholder: "請輸入人口"
+                }, 
+            {
+                    label: "國家:",
+                    name: "State",
+                    placeholder: "請輸入國家"
+                }
+            ]
+        } );
+
+        editor.on('onOpen', function() {
+            if ( this.s.action === 'create' || this.s.action === 'edit' ) {
+                this.hide('_id');
+            }
+        });
+        
+        editor.on('close', function(e) {                  
+              table.ajax.reload(null, false);       // keep paging
+        });   
+
+        var table = $('#ZipcodesTable').DataTable({
+            language: {
+                "processing":   "處理中...",
+                "loadingRecords": "載入中...",
+                "lengthMenu":   "顯示 _MENU_ 項結果",
+                "zeroRecords":  "沒有符合的結果",
+                "info":         "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                "infoEmpty":    "顯示第 0 至 0 項結果，共 0 項",
+                "infoFiltered": "(從 _MAX_ 項結果中過濾)",
+                "infoPostFix":  "",
+                "search":       "搜尋:",
+                "paginate": {
+                    "first":    "第一頁",
+                    "previous": "上一頁",
+                    "next":     "下一頁",
+                    "last":     "最後一頁"
+                },
+                "aria": {
+                    "sortAscending":  ": 升冪排列",
+                    "sortDescending": ": 降冪排列"
+                }
+            },
+            "paging": true,
+            "pageLength": 5,
+            "processing": true,
+            "ordering":true,
+            "serverSide": true,
+             'ajax': {
+                 'type': 'post',
+                 'url': '/GetZipCodes',
+             },
+            'columns':
+                [
+/*                     { 'data': '_id', "defaultContent": "", 'name': '_id' }, */
+                { 'data': 'ZipCode', "defaultContent": "", 'name': 'ZipCode' },
+                { 'data': 'City', "defaultContent": "", 'name': 'City' },
+                { 'data': 'Population', "defaultContent": "", 'name': 'Population' },
+                { 'data': 'State', "defaultContent": "", 'name': 'State' }
+                ],
+            "columnDefs": [
+                {
+                    "searchable": false,
+                    "targets": 0
+                }
+            ],
+            select: true,
+            dom: 'Bfrtip',
+            buttons: [
+                { extend: "create", editor: editor, text:"新增", className: "btn btn-primary" },
+                { extend: "edit", editor: editor, text:"修改", className: "btn btn-primary"  },
+                   { extend: "remove", editor: editor, text:"刪除", className: "btn btn-primary"  }
+            ] 
+        });
+    });
+</script>
+
+<%- include('parts/html-foot') %>

@@ -1,0 +1,107 @@
+<%- include('../parts/html-head') %>
+<%- include('../parts/navbar') %>
+
+<style>
+    table a>.fa-trash-alt {
+        color: red;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+
+                    <li class="page-item <%= page <=1 ? 'disabled':'' %>">
+                        <a class="page-link" href="/address/list/<%= page-10 %>"><i class="fas fa-bus"></i></a>
+                    </li>
+                    <li class="page-item <%= page <=1 ? 'disabled':'' %>">
+                        <a class="page-link" href="/address/list/<%= page-1 %>"><i class="fas fa-ghost"></i></a>
+                    </li>
+                    <% for(let i = 1;i<= tot_page;i++){ %>
+                    <li class="page-item <%= page ==i ? 'active':'' %>">
+                        <a class="page-link" href="/address/list/<%= i %>"><%= i %></a>
+                    </li>
+                    <% } %>
+                    <li class="page-item <%= page >=tot_page ? 'disabled':'' %>">
+                        <a class="page-link" href="/address/list/<%= page+1 %>"><i class="fas fa-ghost"></i></a>
+                    </li>
+                    <li class="page-item <%= page >=tot_page ? 'disabled':'' %>">
+                        <a class="page-link" href="/address/list/<%= page+10 %>"><i class="fas fa-bus"></i></a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <% if(isAdmin){ %>
+                        <th><i class="fas fa-trash-alt"></i></th>
+                        <%  } %>
+                        <th scope="col">sid</th>
+                        <th scope="col">name</th>
+                        <th scope="col">image</th>
+                        <th scope="col">email</th>
+                        <th scope="col">phone</th>
+                        <th scope="col">birthday</th>
+                        <th scope="col">address</th>
+                        <% if(isAdmin){ %>
+                        <th><i class="fas fa-pencil-alt"></i></th>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i of rows){ %>
+                    <tr data-sid="<%= i.sid %>">
+                        <td>
+                            <% if(isAdmin){ %>
+                            <a class="del-link" href="/address/delete/<%= i.sid %>">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                            <% } %>
+                        </td>
+                        <td><%= i.sid %></td>
+                        <td><%= i.name %></td>
+                        <td></td>
+                        <td><%= i.email %></td>
+                        <td><%= i.phone %></td>
+                        <td><%= i.birthday %></td>
+                        <td><%= i.address %></td>
+                        <td>
+                            <% if(isAdmin){ %>
+                            <a href="/address/edit/<%= i.sid %>">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('../parts/scripts') %>
+
+<script>
+    const deLink = $('.del-link');
+    deLink.click(function (event) {
+        const tr = $(event.target.closest('tr'));
+        const sid = tr.attr('data-sid');
+
+        if (!confirm(`你真的要這麼衝動刪掉${sid}`)) {
+            event.preventDefault; //取消預設動作
+        }
+    });
+
+</script>
+
+
+<%- include('../parts/html-foot') %>

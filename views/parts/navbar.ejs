@@ -1,0 +1,141 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/address/home">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="menu transition">
+            <div class="bar bar1 transition"></div>
+            <div class="bar bar2 transition"></div>
+            <div class="bar bar3 transition"></div>
+
+            <ul class="navbar-nav mr-auto transition">
+                <li class="nav-item  <%= pageName==='ad-list' ? 'active' : '' %>">
+                    <a class="nav-link transition" href="/address/list">MYSQL</a>
+                </li>
+                <li class="nav-item  <%= pageName==='mongo' ? 'active' : '' %>">
+                    <a class="nav-link transition" href="/address/mongo">mongo</a>
+                </li>
+
+                <li class="nav-item  <%= pageName==='imganal' ? 'active' : '' %>">
+                    <a class="nav-link transition" href="/address/imganal">圖片分析</a>
+                </li>
+                <li class="nav-item  <%= pageName==='luis' ? 'active' : '' %>">
+                    <a class="nav-link transition" href="/address/luis">LUIS</a>
+                </li>
+                <li class="nav-item  <%= pageName==='comVs' ? 'active' : '' %>">
+                    <a class="nav-link transition" href="/address/comVs">comVs</a>
+                </li>
+
+            </ul>
+
+        </div>
+        <!-- <ul class="navbar-nav" style="float: right;">
+
+            <li class="nav-item <%= pageName==='ad-login' ? 'active' : '' %>">
+                <a class="nav-link" href="/address/login">Login</a>
+            </li>
+
+        </ul> -->
+
+    </div>
+</nav>
+
+<style>
+    #navbarSupportedContent .nav-item.active {
+        background-color: #b3eef7;
+        border-radius: 10px;
+    }
+
+    .transition {
+        transition: 0.4s;
+    }
+
+    .wrapper {
+        width: 800px;
+        margin: 20px auto;
+    }
+
+    .menu {
+        display: inline-block;
+        cursor: pointer;
+        position: relative;
+        padding: 0 0 0 2px;
+    }
+
+    .menu.active {
+        background: #fff;
+        /* background:red; */
+    }
+
+    .menu ul {
+        position: relative;
+        left: 0;
+        top: 0;
+        background: rgba(255, 255, 255, .8);
+        width: 400px;
+        opacity: 0;
+        /*表示完全透明 */
+        max-height: 0;
+        /* height:300px; */
+        overflow: hidden;
+        /* 
+            height(300px) 大於 max-height(100px) 時，會呈現 max-height(100px) 的高度。
+            height(100px) 小於 max-height(300px) 時，會呈現 height 的高度，並且高度固定。
+            */
+    }
+
+    .menu.active ul {
+        opacity: 1;
+        max-height: 100%;
+        /* max-height: 100px; */
+    }
+
+    .menu ul li a {
+        display: block;
+        padding: 10px 12px;
+    }
+
+
+    .menu ul li a:hover {
+        background: lightblue;
+    }
+
+    ul,li {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .bar {
+        width: 36px;
+        height: 6px;
+        background: #666;
+        margin: 6px 0;
+        border-radius: 2px;
+    }
+
+    .active .bar1 {
+        -webkit-transform: rotate(-45deg) translate(-9px, 7px);
+        transform: rotate(-45deg) translate(-9px, 7px);
+    }
+
+    .active .bar2 {
+        opacity: 0;
+    }
+
+    .active .bar3 {
+        -webkit-transform: rotate(45deg) translate(-9px, -8px);
+        transform: rotate(45deg) translate(-9px, -8px);
+    }
+</style>
+<script src="/js/jquery-3.4.1.min.js"></script>
+<script>
+    $(function () {
+        $(".menu").click(function () {
+            $(this).toggleClass('active');
+        })
+    })
+</script>

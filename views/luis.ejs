@@ -1,0 +1,72 @@
+<%- include('parts/html-head') %>
+<%- include('parts/navbar') %>
+<br>
+<h1 style="text-align: center;">luis分析</h1>
+<br>
+<form method="post" enctype="multipart/form-data" id="upload-file">
+    <fieldset>
+        <label for="text">講話</label>
+        <input type="text" name="text" id="text">
+        <button id="upload-file-btn" onclick="analyse()" type="button">分析</button>
+    </fieldset>
+</form>
+<div id="wrapper" style="width: 800px; display:table ;">
+    <div id="jsonOutput" style="width:400px; display:table-cell;">
+        <p>Response:</p>
+
+    </div>
+
+</div>
+
+
+<%- include('parts/scripts') %>
+<script>
+
+    function analyse() {
+        var text = document.getElementById("text").value;
+        var params = {
+            'subscription-key': "19c53b46adf04b26b53b641ae1388481",
+            'verbose': true,
+            'show-all-intents': true,
+            'log': true,
+            'query': text
+            // Request parameters
+        };
+        $.ajax({
+
+            url: 'https://westus.api.cognitive.microsoft.com/luis/prediction/v3.0/apps/9195f52c-4197-450c-b0fb-f96f61e3fa46/slots/production/predict?' + $.param(params),
+
+            beforeSend: function (xhrObj) {
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type", "application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "19c53b46adf04b26b53b641ae1388481");
+            },
+            cache: false,
+            type: "GET",
+
+
+            success: function (returnhtml) {
+                var str = "<p>Response:</p>";
+                str += `<p>你說了 ${returnhtml.query} </p>`;
+                str += `<p>你想要 ${returnhtml.prediction.topIntent}?</p>`;
+                str += "<p>" + JSON.stringify(returnhtml) + "</p>";
+
+                // show response
+                // $("#prediction").append("<p>" + JSON.stringify(returnhtml) + "<p>");
+                $("#jsonOutput").html(str);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                // show error
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        })// .done(function (result) {
+
+        // }).fail(function (error) {
+        //     alert(error.statusText);
+        // });
+    };
+</script>
+
+
+<%- include('parts/html-foot') %>
